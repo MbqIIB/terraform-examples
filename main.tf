@@ -2,6 +2,12 @@ provider "aws" {
 region = "us-east-1"
 }
 
+variable "server_port" 
+{
+description = "server usage ports"
+default = 80
+}
+
 resource "aws_instance" "testserver" {
 
 ami = "ami-55ef662f"
@@ -28,20 +34,23 @@ name = "example-sg"
 
 ingress {
 
-from_port = 80
-to_port  = 80
+from_port = "${var.server_port}"
+to_port  = "${var.server_port}"
 protocol  = "tcp"
 cidr_blocks = ["0.0.0.0/0"]
 }
 
 
 egress {
-from_port = 80
-to_port  = 80
+from_port = "${var.server_port}"
+to_port  = "${var.server_port}"
 protocol  = "tcp"
 cidr_blocks = ["0.0.0.0/0"]
 }
 }
 
 
+output "public_ip" {
+value = "${aws_instance.testserver.public_ip}"
+}
 
